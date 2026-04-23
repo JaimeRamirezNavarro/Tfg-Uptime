@@ -13,11 +13,12 @@ return new class extends Migration
 {
     Schema::create('servers', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('user_id')->constrained(); 
         $table->string('name');
-        $table->string('ip_address')->nullable();
-        $table->string('api_token')->unique(); 
-        $table->string('status')->default('active');
+        $table->string('api_token')->unique();
+        $table->string('ip_address')->nullable(); // La ponemos aquí
+        $table->string('ssh_user')->nullable();    // La ponemos aquí
+        $table->string('ssh_password')->nullable(); // La ponemos aquí
+        $table->unsignedBigInteger('user_id')->nullable(); // La hacemos nullable de una vez
         $table->timestamps();
     });
 }

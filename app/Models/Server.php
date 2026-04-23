@@ -9,8 +9,7 @@ class Server extends Model
 {
     use HasApiTokens;
 
-    // Esta línea es la que soluciona el error:
-    protected $fillable = ['name', 'api_token', 'ip_address', 'status'];
+    protected $fillable = ['name', 'api_token', 'ip_address', 'status', 'is_enabled', 'check_type', 'ssh_user', 'ssh_password', 'last_alerted_at'];
 
     public function user()
     {

@@ -2,12 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Metric extends Model
 {
-    public function server() {
-        return $this->belongsTo(Server::class); // Una métrica pertenece a un servidor 
+    use HasFactory;
+
+    // Desactivamos la protección de campos para permitir guardar server_id, disk_free, etc.
+    protected $guarded = [];
+
+    /**
+     * Relación con el servidor
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class);
     }
-    protected $fillable = ['cpu_load', 'ram_usage', 'disk_free'];
 }
