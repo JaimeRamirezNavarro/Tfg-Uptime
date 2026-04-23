@@ -9,9 +9,9 @@ import subprocess
 # ==========================================
 # CONFIGURACIÓN DEL AGENTE (Rellenar al instalar)
 # ==========================================
-API_URL = "http://localhost:8000/api/metrics" # Tu dominio de Laravel
-API_TOKEN = "TU_API_TOKEN_AQUI"               # El token generado en la BD para este servidor
-INTERVAL = 30                                 # Segundos entre envíos
+API_URL = "http://localhost:8000/api/metrics" # El Dashboard y el Agente vivirán en la misma máquina
+API_TOKEN = "YJ6YOPh3tWKe886Wp4BzDPrfhhLA158s"      # El token generado en la BD para el ZimaBlade
+INTERVAL = 5                                      # Segundos entre envíos (Bajado a 5s para máxima fluidez, consume muy poco)
 
 def get_local_metrics():
     # 1. Obtener métricas básicas del propio sistema

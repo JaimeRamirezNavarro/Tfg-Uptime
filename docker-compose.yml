@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  uptime-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uptime-dashboard
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      # Montamos el archivo .env desde el disco anfitrión
+      - ./.env:/var/www/html/.env
+      # Montamos la base de datos viva desde el disco anfitrión para no perder los datos al apagar el contenedor
+      - ./database/database.sqlite:/var/www/html/database/database.sqlite
+      # Montamos los logs de Laravel para poder inspeccionarlos si falla
+      - ./storage/logs:/var/www/html/storage/logs
+      # Montamos la carpeta del agente para asegurarnos de que persista
+      - ./monitor.py:/var/www/html/monitor.py
