@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Habilitar el módulo de reescritura de Apache para las rutas de Laravel
 RUN a2enmod rewrite
