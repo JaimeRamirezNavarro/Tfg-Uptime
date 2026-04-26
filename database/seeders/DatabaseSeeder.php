@@ -63,5 +63,15 @@ class DatabaseSeeder extends Seeder
                 'is_enabled' => true,
             ]
         );
+
+        \App\Models\Server::updateOrCreate(
+            ['name' => 'ZimaBlade (Local Node)'],
+            [
+                'ip_address' => 'casaos-1.tailbd65b1.ts.net',
+                'check_type' => 'agent',
+                'api_token' => 'MASTER_TOKEN_ZIMA', // Puedes poner el que prefieras
+                'is_enabled' => true,
+            ]
+        );
     }
 }
