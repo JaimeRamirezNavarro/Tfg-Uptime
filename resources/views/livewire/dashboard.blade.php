@@ -56,6 +56,23 @@
                                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Target Endpoint</label>
                                 <input type="text" wire:model="ip" class="premium-input" placeholder="e.g. 192.168.1.1 or example.com">
                             </div>
+
+                            @if($checkType === 'agent')
+                                <div class="grid grid-cols-2 gap-4 pt-2">
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">SSH User</label>
+                                        <input type="text" wire:model="sshUser" class="premium-input" placeholder="root">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">SSH Password</label>
+                                        <input type="password" wire:model="sshPassword" class="premium-input" placeholder="••••••••">
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 px-1">
+                                    <input type="checkbox" wire:model="autoDeploy" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-600">
+                                    <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Enable Remote Deployment</span>
+                                </div>
+                            @endif
                         </div>
 
                         <div class="pt-4">
