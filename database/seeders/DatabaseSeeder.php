@@ -15,11 +15,53 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::firstOrCreate(
+            ['email' => 'jaime@uptime.com'],
+            [
+                'name' => 'Jaime',
+                'password' => bcrypt('password'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Reference Infrastructure
+        \App\Models\Server::updateOrCreate(
+            ['name' => 'Google Global (Ping)'],
+            [
+                'ip_address' => '8.8.8.8',
+                'check_type' => 'ping',
+                'api_token' => \Illuminate\Support\Str::random(64),
+                'is_enabled' => true,
+            ]
+        );
+
+        \App\Models\Server::updateOrCreate(
+            ['name' => 'Cloudflare Edge (Ping)'],
+            [
+                'ip_address' => '1.1.1.1',
+                'check_type' => 'ping',
+                'api_token' => \Illuminate\Support\Str::random(64),
+                'is_enabled' => true,
+            ]
+        );
+
+        \App\Models\Server::updateOrCreate(
+            ['name' => 'Google Search (HTTP)'],
+            [
+                'ip_address' => 'https://www.google.com',
+                'check_type' => 'http',
+                'api_token' => \Illuminate\Support\Str::random(64),
+                'is_enabled' => true,
+            ]
+        );
+
+        \App\Models\Server::updateOrCreate(
+            ['name' => 'GitHub Platform (HTTP)'],
+            [
+                'ip_address' => 'https://github.com',
+                'check_type' => 'http',
+                'api_token' => \Illuminate\Support\Str::random(64),
+                'is_enabled' => true,
+            ]
+        );
     }
 }

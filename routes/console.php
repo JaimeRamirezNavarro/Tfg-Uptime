@@ -9,4 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('servers:poll')->everyMinute();
+Schedule::command('uptime:poll-web')->everyMinute();
 Schedule::command('uptime:check-status')->everyMinute();
