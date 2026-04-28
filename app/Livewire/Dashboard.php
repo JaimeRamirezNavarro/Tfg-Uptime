@@ -65,7 +65,7 @@ while true; do
   curl -s -X POST $apiUrl \
     -H "Authorization: Bearer $apiToken" \
     -H "Content-Type: application/json" \
-    -d "{\\"cpu_load\\": \$CPU, \\"ram_usage\\": \$RAM, \\"disk_free\\": \$DISK, \\"details\\": \\"{\\\\"services\\\\": [], \\\\"containers\\\\": []}\\"}" > /dev/null
+    -d "{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": \"{}\"}" > /dev/null
   sleep 2
 done
 EOF
