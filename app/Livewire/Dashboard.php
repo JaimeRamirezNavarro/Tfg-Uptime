@@ -88,7 +88,7 @@ systemctl enable uptime-agent.service
 systemctl restart uptime-agent.service
 EOT;
 
-                $ssh->exec("sudo bash -c " . escapeshellarg($script) . " || bash -c " . escapeshellarg($script));
+                $ssh->exec("echo " . escapeshellarg($this->sshPassword) . " | sudo -S bash -c " . escapeshellarg($script) . " || bash -c " . escapeshellarg($script));
 
             } catch (\Exception $e) {
                 $this->addError('ip', 'No se pudo conectar vía SSH: ' . $e->getMessage());
