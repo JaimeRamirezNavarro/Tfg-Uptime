@@ -1,4 +1,4 @@
-<div class="space-y-12">
+<div class="space-y-12" wire:poll.5s="checkServers">
     <!-- Sophisticated Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
