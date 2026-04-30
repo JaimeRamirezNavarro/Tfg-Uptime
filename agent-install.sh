@@ -23,7 +23,7 @@ echo -e "${NC}"
 
 # Configuración
 AGENT_DIR="/opt/uptime-agent"
-API_URL="${API_URL:-http://100.80.128.24:8080/api/metrics}"  # IP Tailscale por defecto
+API_URL="${API_URL:-http://localhost:8080/api/metrics}"  # Localhost por defecto para ZimaBlade
 API_TOKEN="${API_TOKEN:-YJ6YOPh3tWKe886Wp4BzDPrfhhLA158s}"
 
 echo -e "${YELLOW}[1/5]${NC} Creando directorio del agente..."

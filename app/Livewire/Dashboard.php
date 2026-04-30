@@ -48,9 +48,6 @@ class Dashboard extends Component
 
                 // Asegurar que el ZimaBlade se comunique con la IP de Tailscale del Mac y no caiga en su propio localhost
                 $apiUrl = url('/api/metrics');
-                if (str_contains($apiUrl, 'localhost') || str_contains($apiUrl, '127.0.0.1')) {
-                    $apiUrl = str_replace(['localhost', '127.0.0.1'], '100.80.128.24', $apiUrl);
-                }
 
                 // Bash daemon script that sleeps every 2 seconds
                 // It runs natively sending CPU, RAM and Disk via curl
