@@ -56,13 +56,17 @@ mkdir -p /opt/uptime-agent
 cat << 'EOF' > /opt/uptime-agent/agent.sh
 #!/bin/bash
 while true; do
-  # 1. Metricas basicas
+  # 1. Metricas basicas (con valores por defecto)
   CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\\([0-9.]*\\)%* id.*/\\1/" | awk '{print 100 - \$1}')
+  CPU=${CPU:-0}
   RAM=$(free | grep Mem | awk '{print \$3/\$2 * 100.0}')
-  DISK=$(df / | grep / | awk '{ print \$5}' | sed 's/%//g')
+  RAM=${RAM:-0}
+  DISK=$(df / | grep / | head -n 1 | awk '{ print \$5}' | sed 's/%//g')
+  DISK=${DISK:-0}
 
   # 2. Servicios (Top 10 running)
   SERVICES=$(systemctl list-units --type=service --state=running --no-pager | head -n 12 | tail -n +2 | awk '{print "\"" \$1 "\""}' | paste -sd "," -)
+  SERVICES=${SERVICES:-""}
 
   # 3. Contenedores Docker
   if command -v docker &> /dev/null; then
@@ -70,12 +74,15 @@ while true; do
   else
     CONTAINERS=""
   fi
+  CONTAINERS=${CONTAINERS:-""}
 
-  # 4. Enviar via cURL con JSON manual
+  # 4. Enviar via cURL con JSON manual (escapando comillas internas)
+  PAYLOAD="{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": \"{\\\"services\\\": [\$SERVICES], \\\"containers\\\": [\$CONTAINERS]}\"}"
+  
   curl -s -X POST $apiUrl \
     -H "Authorization: Bearer $apiToken" \
     -H "Content-Type: application/json" \
-    -d "{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": \"{\\\"services\\\": [\$SERVICES], \\\"containers\\\": [\$CONTAINERS]}\"}" > /dev/null
+    -d "$PAYLOAD" > /dev/null
   sleep 5
 done
 EOF
