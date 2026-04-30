@@ -76,8 +76,8 @@ while true; do
   fi
   CONTAINERS=${CONTAINERS:-""}
 
-  # 4. Enviar via cURL con JSON manual (escapando comillas internas)
-  PAYLOAD="{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": \"{\\\"services\\\": [\$SERVICES], \\\"containers\\\": [\$CONTAINERS]}\"}"
+  # 4. Enviar via cURL con JSON directo
+  PAYLOAD="{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": {\"services\": [\$SERVICES], \"containers\": [\$CONTAINERS]}}"
   
   curl -s -X POST $apiUrl \
     -H "Authorization: Bearer $apiToken" \

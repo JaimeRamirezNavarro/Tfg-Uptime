@@ -18,7 +18,7 @@ class MetricController extends Controller
             'cpu_load'  => 'required|numeric',
             'ram_usage' => 'required|numeric',
             'disk_free' => 'required|numeric',
-            'details'   => 'nullable|string',
+            'details'   => 'nullable', // Puede ser string (JSON) o array directo
         ]);
 
         // 2. Obtenemos el servidor usando el token de la API
@@ -41,16 +41,23 @@ class MetricController extends Controller
         }
 
         // 3. Guardamos la métrica
-        $metric = $server->metrics()->create([
+        $metricData = [
             'cpu_load'  => $validated['cpu_load'],
             'ram_usage' => $validated['ram_usage'],
             'disk_free' => $validated['disk_free'],
-            'details'   => $validated['details'] ?? null,
-        ]);
+        ];
+
+        if (!empty($validated['details'])) {
+            $metricData['details'] = json_decode($validated['details'], true);
+        }
+
+        $metric = $server->metrics()->create($metricData);
 
         // 4. Actualizamos los detalles del servidor
         if (!empty($validated['details'])) {
-            $server->update(['last_sync_details' => $validated['details']]);
+            $details = is_string($validated['details']) ? json_decode($validated['details'], true) : $validated['details'];
+            $server->update(['last_sync_details' => $details]);
+            $metric->update(['details' => $details]); // También lo guardamos en la métrica decodificado
         }
 
         // 5. Disparamos el evento en tiempo real (Reverb)

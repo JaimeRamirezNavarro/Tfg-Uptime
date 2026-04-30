@@ -55,13 +55,32 @@
 
         <!-- Side Stats -->
         <div class="space-y-4">
-            <div class="glass-card p-8 bg-white/5 border-white/10">
-                <p class="text-[10px] font-bold text-text-tertiary uppercase tracking-widest mb-3">Availability</p>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-5xl font-display font-black tracking-tighter text-text-primary">99.9</span>
-                    <span class="text-sm font-bold text-text-secondary">%</span>
+            <div class="glass-card p-6 bg-white/5 border-white/10">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-[10px] font-bold text-text-tertiary uppercase tracking-widest">Real-time CPU</p>
+                    <div class="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
                 </div>
-                <p class="text-[9px] text-text-tertiary uppercase font-black tracking-widest mt-4">Stable connection</p>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-4xl font-display font-black tracking-tighter text-text-primary">{{ $current ? round($current->cpu_load, 1) : '0' }}</span>
+                    <span class="text-xs font-bold text-text-secondary">%</span>
+                </div>
+                <div class="mt-4 h-1 w-full bg-bg-tertiary rounded-full overflow-hidden">
+                    <div class="h-full bg-indigo-500 transition-all duration-500" style="width: {{ $current ? $current->cpu_load : 0 }}%"></div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 bg-white/5 border-white/10">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-[10px] font-bold text-text-tertiary uppercase tracking-widest">Real-time RAM</p>
+                    <div class="h-1.5 w-1.5 rounded-full bg-sky-500 animate-pulse"></div>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-4xl font-display font-black tracking-tighter text-text-primary">{{ $current ? round($current->ram_usage, 1) : '0' }}</span>
+                    <span class="text-xs font-bold text-text-secondary">%</span>
+                </div>
+                <div class="mt-4 h-1 w-full bg-bg-tertiary rounded-full overflow-hidden">
+                    <div class="h-full bg-sky-500 transition-all duration-500" style="width: {{ $current ? $current->ram_usage : 0 }}%"></div>
+                </div>
             </div>
 
             <div class="glass-card p-8 flex flex-col justify-between h-40">
@@ -223,7 +242,27 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                        animation: {
+                            duration: 0
+                        },
+                        hover: {
+                            mode: 'index',
+                            intersect: false,
+                            animationDuration: 0
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                position: 'nearest',
+                                external: null,
+                                animation: false
+                            }
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,

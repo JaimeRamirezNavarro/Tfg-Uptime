@@ -12,6 +12,10 @@ class Metric extends Model
     // Desactivamos la protección de campos para permitir guardar server_id, disk_free, etc.
     protected $guarded = [];
 
+    protected $casts = [
+        'details' => 'array',
+    ];
+
     /**
      * Relación con el servidor
      */
