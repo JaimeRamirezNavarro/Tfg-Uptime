@@ -56,14 +56,27 @@ mkdir -p /opt/uptime-agent
 cat << 'EOF' > /opt/uptime-agent/agent.sh
 #!/bin/bash
 while true; do
-  CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\\([0-9.]*\\)%* id.*/\\1/" | awk '{print 100 - $1}')
-  RAM=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
-  DISK=$(df / | grep / | awk '{ print $5}' | sed 's/%//g')
+  # 1. Metricas basicas
+  CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\\([0-9.]*\\)%* id.*/\\1/" | awk '{print 100 - \$1}')
+  RAM=$(free | grep Mem | awk '{print \$3/\$2 * 100.0}')
+  DISK=$(df / | grep / | awk '{ print \$5}' | sed 's/%//g')
+
+  # 2. Servicios (Top 10 running)
+  SERVICES=$(systemctl list-units --type=service --state=running --no-pager | head -n 12 | tail -n +2 | awk '{print "\"" \$1 "\""}' | paste -sd "," -)
+
+  # 3. Contenedores Docker
+  if command -v docker &> /dev/null; then
+    CONTAINERS=$(docker ps --format '"{{.Names}} ({{.Status}})"' | paste -sd "," -)
+  else
+    CONTAINERS=""
+  fi
+
+  # 4. Enviar via cURL con JSON manual
   curl -s -X POST $apiUrl \
     -H "Authorization: Bearer $apiToken" \
     -H "Content-Type: application/json" \
-    -d "{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": \"{}\"}" > /dev/null
-  sleep 2
+    -d "{\"cpu_load\": \$CPU, \"ram_usage\": \$RAM, \"disk_free\": \$DISK, \"details\": \"{\\\"services\\\": [\$SERVICES], \\\"containers\\\": [\$CONTAINERS]}\"}" > /dev/null
+  sleep 5
 done
 EOF
 chmod +x /opt/uptime-agent/agent.sh
