@@ -247,7 +247,7 @@ EOT;
                 
                 \App\Models\Metric::create([
                     'server_id' => $server->id,
-                    'cpu_load' => $latency > 100 ? 100 : $latency, // Mantener para compatibilidad de gráficas, pero guardamos real en details
+                    'cpu_load' => $latency, // Guardamos la latencia real en MS
                     'ram_usage' => 0,
                     'disk_free' => 0,
                     'details' => json_encode(['latency' => $latency, 'online' => $isOnline])
@@ -275,7 +275,7 @@ EOT;
 
                 \App\Models\Metric::create([
                     'server_id' => $server->id,
-                    'cpu_load' => min(100, $latency), // Cap para la gráfica de 0-100%
+                    'cpu_load' => $latency, // Guardamos la latencia real en MS
                     'ram_usage' => 0,
                     'disk_free' => 0,
                     'details' => json_encode(['latency' => $latency, 'status_code' => $statusCode, 'online' => $isOnline])
