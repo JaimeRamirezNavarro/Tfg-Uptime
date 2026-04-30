@@ -29,11 +29,15 @@ WORKDIR /var/www/html
 # Copiar todos los archivos del proyecto al contenedor
 COPY . /var/www/html
 
-# Configurar Git para permitir cualquier carpeta (evita error de "dubious ownership")
+# Configurar Git para permitir cualquier carpeta
 RUN git config --global --add safe.directory '*'
 
-# Instalar las librerías de PHP desde composer.lock optimizadas
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Eliminar rastro de .git dentro del contenedor para evitar conflictos de permisos y ahorrar espacio
+RUN rm -rf .git
+
+# Instalar las librerías de PHP con límite de memoria desactivado
+ENV COMPOSER_MEMORY_LIMIT=-1
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Asegurar que los permisos son los correctos para que Apache pueda guardar logs y leer la base de datos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
