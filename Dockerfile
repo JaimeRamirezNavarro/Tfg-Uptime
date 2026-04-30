@@ -29,6 +29,9 @@ WORKDIR /var/www/html
 # Copiar todos los archivos del proyecto al contenedor
 COPY . /var/www/html
 
+# Configurar Git para permitir la carpeta del proyecto (evita error de "dubious ownership")
+RUN git config --global --add safe.directory /var/www/html
+
 # Instalar las librerías de PHP desde composer.lock optimizadas
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
