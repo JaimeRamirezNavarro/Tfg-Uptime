@@ -34,6 +34,20 @@ class ServerDetail extends Component
         $this->dispatch('update-chart', data: $this->chartData);
     }
 
+    public function toggleServer()
+    {
+        $this->server->is_enabled = !$this->server->is_enabled;
+        $this->server->save();
+        session()->flash('message', 'Monitorización ' . ($this->server->is_enabled ? 'reactivada' : 'pausada') . '.');
+    }
+
+    public function deleteServer()
+    {
+        $this->server->delete();
+        session()->flash('message', 'Servidor eliminado del inventario.');
+        return redirect()->route('dashboard');
+    }
+
     public function loadChartData()
     {
         $query = Metric::where('server_id', $this->server->id);

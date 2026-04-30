@@ -16,7 +16,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Forzamos HTTPS siempre para evitar errores de Mixed Content con Cloudflare
-        \Illuminate\Support\Facades\URL::forceScheme('https');
+        // Forzamos HTTPS solo en producción para evitar errores de Mixed Content con Cloudflare
+        // y permitir el desarrollo en local (localhost) con HTTP.
+        if (app()->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }

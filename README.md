@@ -1,58 +1,225 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# UPTIME Monitoring Platform v2.0
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema de monitorización de infraestructura en tiempo real con dashboard moderno y agentes autónomos.
 
-## About Laravel
+## Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Monitorización en Tiempo Real**: CPU, RAM, Disco, Servicios y Contenedores Docker
+- **Multi-Tipo de Check**: Agente autónomo, Ping, HTTP
+- **Dashboard Moderno**: UI oscura minimalista con actualizaciones en vivo vía WebSockets
+- **Auto-Despliegue**: Instalación automática del agente vía SSH
+- **ZimaBlade Ready**: Optimizado para despliegue en ZimaBlade como servidor central
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Arquitectura
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+┌─────────────────┐      ┌──────────────────┐      ┌─────────────────┐
+│   ZimaBlade     │─────▶│   Dashboard      │◀─────│   Servidores    │
+│   (Agente)      │ HTTP │   Laravel 13     │ HTTP │   Remotos       │
+│   CPU/RAM/Docker│ POST │   + Reverb WS    │ POST │   (Ping/HTTP)   │
+└─────────────────┘      └──────────────────┘      └─────────────────┘
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Inicio Rápido
 
-## Contributing
+### 1. Dashboard (Mac/Servidor Central)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cd ~/Desktop/uptime-server
 
-## Code of Conduct
+# Opción A: Docker (Recomendado)
+docker-compose up -d
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Opción B: Nativo con Laravel
+composer install
+npm install
+php artisan migrate
+php artisan serve --port=8080
+```
 
-## Security Vulnerabilities
+El dashboard estará disponible en: `http://localhost:8080`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 2. Agente en ZimaBlade
+
+```bash
+# Copia el script de instalación a tu ZimaBlade
+scp agent-install.sh root@zimablade:/tmp/
+
+# Conecta por SSH y ejecuta
+ssh root@zimablade
+cd /tmp
+chmod +x agent-install.sh
+
+# Configura las variables de entorno
+export API_URL="http://<IP-TAILSCALE-MAC>:8080/api/metrics"
+export API_TOKEN="YJ6YOPh3tWKe886Wp4BzDPrfhhLA158s"
+
+# Ejecuta el instalador
+./agent-install.sh
+```
+
+### 3. Verificar Conexión
+
+```bash
+# En el dashboard
+curl http://localhost:8080/api/health
+
+# En ZimaBlade
+systemctl status uptime-agent
+journalctl -u uptime-agent -f
+```
+
+## Configuración
+
+### Variables de Entorno (.env)
+
+```env
+# App
+APP_NAME=UPTIME
+APP_DEBUG=true
+APP_URL=http://localhost:8080
+
+# Database (SQLite para desarrollo)
+DB_CONNECTION=sqlite
+
+# Reverb (WebSockets)
+REVERB_APP_ID=xxx
+REVERB_APP_KEY=xxx
+REVERB_APP_SECRET=xxx
+
+# Agente
+API_HOST=127.0.0.1
+API_PORT=8080
+API_TOKEN=YJ6YOPh3tWKe886Wp4BzDPrfhhLA158s
+```
+
+### Health Check
+
+Endpoint público para monitoring externo:
+
+```bash
+GET /api/health
+
+Response:
+{
+  "status": "healthy",
+  "timestamp": "2026-04-29T10:00:00+00:00",
+  "service": "uptime-monitor",
+  "version": "2.0.0"
+}
+```
+
+## API Endpoints
+
+### POST /api/metrics
+
+Envía métricas desde el agente.
+
+**Headers:**
+```
+Authorization: Bearer <API_TOKEN>
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "cpu_load": 45.2,
+  "ram_usage": 62.1,
+  "disk_free": 78.5,
+  "details": "{\"services\":[\"nginx\",\"docker\"],\"containers\":[\"app (Up)\"]}"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "data": { "id": 123, "cpu_load": 45.2, ... }
+}
+```
+
+## Estructura del Proyecto
+
+```
+uptime-server/
+├── app/
+│   ├── Http/Controllers/Api/
+│   │   └── MetricController.php    # API endpoint
+│   ├── Livewire/
+│   │   ├── Dashboard.php           # Vista principal
+│   │   └── ServerDetail.php        # Detalles por servidor
+│   └── Models/
+│       ├── Server.php              # Modelo con Sanctum
+│       └── Metric.php              # Métricas históricas
+├── resources/
+│   ├── css/app.css                 # Tailwind + Dark Theme
+│   └── views/layouts/              # Blade templates
+├── monitor.py                      # Agente Python
+├── agent-install.sh                # Script instalación
+├── docker-compose.yml              # Docker config
+└── .env                            # Configuración
+```
+
+## Comandos Útiles
+
+### Dashboard
+```bash
+# Docker
+docker-compose logs -f
+docker-compose restart
+
+# Laravel
+php artisan serve --port=8080
+php artisan queue:work
+php artisan pail  # Logs en tiempo real
+```
+
+### Agente (ZimaBlade)
+```bash
+systemctl status uptime-agent
+journalctl -u uptime-agent -f
+systemctl restart uptime-agent
+systemctl stop uptime-agent
+```
+
+## Seguridad
+
+- **Tokens API**: Cada servidor tiene un token único (32 chars)
+- **SSH Passwords**: Encriptados en base de datos con Laravel Encrypter
+- **Health Check**: Endpoint público sin autenticación
+
+## Stack Tecnológico
+
+| Componente | Tecnología |
+|------------|------------|
+| Backend | Laravel 13 + PHP 8.4 |
+| Frontend | Livewire 4 + Alpine.js |
+| WebSockets | Laravel Reverb |
+| Base de Datos | SQLite (dev) / PostgreSQL (prod) |
+| Agente | Python 3 + psutil |
+| Container | Docker + docker-compose |
+
+## Troubleshooting
+
+### El agente no conecta
+1. Verifica que el puerto 8080 esté accesible desde ZimaBlade
+2. Si usas Tailscale: `export API_URL="http://<tailscale-ip>:8080/api/metrics"`
+3. Revisa logs: `journalctl -u uptime-agent -f`
+
+### Dashboard no muestra datos
+1. Verifica health check: `curl http://localhost:8080/api/health`
+2. Revisa logs Laravel: `storage/logs/laravel.log`
+3. Reinicia Reverb: `php artisan reverb:start`
+
+### Contenedores Docker no aparecen
+- Asegúrate de que el usuario del agente tenga permisos Docker
+- Prueba: `docker ps` manualmente en el servidor
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT License - Proyecto TFG
+
+---
+
+**Desarrollado para monitorización de infraestructura ZimaBlade**

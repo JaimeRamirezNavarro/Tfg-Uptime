@@ -160,6 +160,11 @@ EOT;
             $lastMetric = $lastMetrics->get($server->id);
             $isOnline = $lastMetric && $lastMetric->created_at->diffInSeconds(now()) < 50;
             
+            if ($server->check_type !== 'agent' && $lastMetric) {
+                $details = json_decode($lastMetric->details, true) ?? [];
+                $isOnline = $isOnline && ($details['online'] ?? false);
+            }
+            
             if ($isOnline && $server->is_enabled) {
                 $activeServers++;
             }
@@ -235,7 +240,7 @@ EOT;
             if ($server->check_type === 'ping') {
                 $ip = escapeshellarg($server->ip_address);
                 $startTime = microtime(true);
-                exec("ping -c 1 -t 1 $ip", $output, $result);
+                exec("ping -c 1 -W 1 $ip", $output, $result);
                 $latency = round((microtime(true) - $startTime) * 1000, 0);
                 
                 $isOnline = ($result === 0);

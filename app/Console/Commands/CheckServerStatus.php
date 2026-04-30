@@ -18,6 +18,10 @@ class CheckServerStatus extends Command
         foreach ($servers as $server) {
             $lastMetric = $server->metrics()->latest()->first();
             $isOffline = !$lastMetric || $lastMetric->created_at->diffInSeconds(now()) > 60;
+            if ($server->check_type !== 'agent' && $lastMetric) {
+                $details = json_decode($lastMetric->details, true) ?? [];
+                $isOffline = $isOffline || !($details['online'] ?? false);
+            }
 
             if ($isOffline) {
                 // Solo alertar si no se ha alertado en la última hora para evitar spam
