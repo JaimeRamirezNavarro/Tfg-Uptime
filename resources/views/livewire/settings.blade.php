@@ -1,117 +1,180 @@
-<div class="space-y-12">
+<div class="max-w-4xl mx-auto space-y-12" 
+     x-data="{ 
+        tempMode: @entangle('tempIsDark'),
+        tempColor: @entangle('tempThemeColor'),
+        colors: {
+            emerald: '#10b981',
+            blue: '#0ea5e9',
+            purple: '#6366f1',
+            orange: '#f43f5e'
+        },
+        updatePreview() {
+            const root = document.documentElement;
+            const isLight = !this.tempMode;
+            root.style.setProperty('--bg-main', isLight ? '#f8f9fa' : '#09090b');
+            root.style.setProperty('--bg-sidebar', isLight ? '#ffffff' : '#121215');
+            root.style.setProperty('--bg-card', isLight ? '#ffffff' : '#18181b');
+            root.style.setProperty('--text-main', isLight ? '#1a1a1a' : '#fafafa');
+            root.style.setProperty('--text-muted', isLight ? '#71717a' : '#a1a1aa');
+            root.style.setProperty('--border-color', isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)');
+            root.style.setProperty('--accent-primary', this.colors[this.tempColor]);
+        }
+     }"
+     x-init="$watch('tempMode', () => updatePreview()); $watch('tempColor', () => updatePreview())">
+     
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-4">
         <div>
-            <h1 class="text-4xl font-display font-black text-text-primary tracking-tight">Ajustes de Sistema</h1>
-            <p class="text-base text-text-secondary font-medium mt-2">Preferencias globales y configuración del núcleo de red (Core v6.1)</p>
+            <h1 class="text-4xl font-display font-black tracking-tighter transition-colors">System Preferences</h1>
+            <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-[0.3em] mt-2">Core Environment Configuration</p>
         </div>
     </div>
 
     @if (session()->has('message'))
-        <div class="p-5 bg-success-glow/10 backdrop-blur-md border border-success/30 text-success rounded-xl text-sm font-bold flex items-center gap-4 animate-in slide-in-from-top-8 duration-500">
-            <div class="h-8 w-8 bg-success/20 rounded-lg flex items-center justify-center text-success">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-            </div>
+        <div class="p-4 bg-success/10 border border-success/20 text-success rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+            <x-lucide-check-circle class="h-4 w-4" />
             {{ session('message') }}
         </div>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div class="grid grid-cols-1 gap-10">
         <!-- Application Settings -->
-        <div class="glass-card p-12 space-y-10">
-            <div class="flex items-center gap-5 mb-4">
-                <div class="h-14 w-14 bg-bg-tertiary text-text-primary rounded-xl flex items-center justify-center border border-border-subtle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm2 1a1 1 0 00-1 1v5a1 1 0 001 1h10a1 1 0 001-1V7a1 1 0 00-1-1H5z" clip-rule="evenodd" /></svg>
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] p-12 rounded-3xl shadow-2xl space-y-12 transition-all duration-500">
+            <div class="flex items-center gap-5">
+                <div class="h-12 w-12 bg-[var(--accent-primary)] rounded-xl flex items-center justify-center shadow-lg shadow-[var(--accent-primary)]/20 transition-all">
+                    <x-lucide-layout class="h-6 w-6 text-white" />
                 </div>
                 <div>
-                    <h3 class="text-xl font-display font-black text-text-primary tracking-tight">General & Branding</h3>
-                    <p class="text-xs text-text-tertiary font-bold uppercase tracking-widest mt-1">Identidad visual de la instancia</p>
+                    <h3 class="text-lg font-bold tracking-tight">Identity & Interface</h3>
+                    <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-1">Branding and visual protocol</p>
                 </div>
             </div>
             
-            <div class="space-y-8">
-                <div>
-                    <label class="block text-xs font-black text-text-tertiary uppercase tracking-[0.2em] mb-3">Nombre de la Plataforma</label>
-                    <input type="text" wire:model="appName" class="w-full bg-bg-tertiary border border-border-subtle focus:border-border-strong text-text-primary rounded-xl px-6 py-4 text-sm font-bold outline-none transition-colors">
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-black text-text-tertiary uppercase tracking-[0.2em] mb-4">Paleta de Identidad (Acento)</label>
-                    <div class="flex flex-wrap gap-5">
-                        @foreach(['emerald' => 'bg-emerald-500', 'blue' => 'bg-sky-500', 'purple' => 'bg-indigo-500', 'orange' => 'bg-rose-500'] as $key => $color)
-                            <button wire:click="setTheme('{{ $key }}')" 
-                                    class="h-14 w-14 rounded-xl {{ $color }} shadow-xl shadow-current/20 {{ $themeColor === $key ? 'ring-4 ring-accent-primary scale-110' : 'hover:scale-110 opacity-80 hover:opacity-100' }} transition-all duration-300 relative">
-                                @if($themeColor === $key)
-                                    <div class="absolute inset-0 flex items-center justify-center text-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
-                                    </div>
-                                @endif
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div class="space-y-10">
+                    <div class="space-y-3">
+                        <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">Platform Title</label>
+                        <input type="text" wire:model="appName" class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-[var(--accent-primary)] text-[var(--text-main)] rounded-xl px-6 py-4 text-xs font-bold outline-none transition-all">
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">Interface Protocol</label>
+                        <div class="flex p-1 bg-[var(--bg-main)] rounded-2xl border border-[var(--border-color)]">
+                            <button @click="tempMode = false" class="flex-1 h-12 rounded-xl flex items-center justify-center gap-3 transition-all duration-300" :class="!tempMode ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-md border border-[var(--border-color)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'">
+                                <x-lucide-sun class="h-4 w-4" />
+                                <span class="text-[9px] font-black uppercase tracking-widest">Light</span>
                             </button>
-                        @endforeach
+                            <button @click="tempMode = true" class="flex-1 h-12 rounded-xl flex items-center justify-center gap-3 transition-all duration-300" :class="tempMode ? 'bg-[var(--bg-card)] text-[var(--text-main)] shadow-md border border-[var(--border-color)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'">
+                                <x-lucide-moon class="h-4 w-4" />
+                                <span class="text-[9px] font-black uppercase tracking-widest">Dark</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-black text-text-tertiary uppercase tracking-[0.2em] mb-3">Frecuencia de Muestreo</label>
-                    <div class="relative group">
-                        <select class="w-full bg-bg-tertiary border border-border-subtle focus:border-border-strong text-text-primary rounded-xl px-6 py-4 text-sm font-bold appearance-none cursor-pointer pr-12 transition-colors outline-none">
-                            <option class="bg-bg-secondary">Stream: 2 segundos (Real-time)</option>
-                            <option class="bg-bg-secondary">High: 5 segundos</option>
-                            <option class="bg-bg-secondary">Standard: 10 segundos</option>
-                            <option class="bg-bg-secondary">Economy: 30 segundos</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-text-tertiary">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="space-y-10">
+                    <div class="space-y-3">
+                        <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">Signature Accent</label>
+                        <div class="flex flex-wrap gap-4">
+                            @foreach(['emerald' => 'bg-[#10b981]', 'blue' => 'bg-[#0ea5e9]', 'purple' => 'bg-[#6366f1]', 'orange' => 'bg-[#f43f5e]'] as $key => $color)
+                                <button @click="tempColor = '{{ $key }}'" 
+                                        class="h-12 w-12 rounded-xl {{ $color }} transition-all duration-300 relative overflow-hidden group"
+                                        :class="tempColor === '{{ $key }}' ? 'ring-2 ring-[var(--text-main)] ring-offset-4 ring-offset-[var(--bg-card)] scale-110 shadow-xl' : 'opacity-40 hover:opacity-100 hover:scale-105'">
+                                    <template x-if="tempColor === '{{ $key }}'">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white bg-white/10">
+                                            <x-lucide-check class="h-4 w-4 stroke-[4]" />
+                                        </div>
+                                    </template>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">Telemetry Stream</label>
+                        <div class="relative group">
+                            <select class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-[var(--accent-primary)] text-[var(--text-main)] rounded-xl px-6 py-4 text-xs font-bold appearance-none outline-none transition-all">
+                                <option class="bg-[var(--bg-card)]">Stream: 2s (Real-time)</option>
+                                <option class="bg-[var(--bg-card)]">High: 5s</option>
+                                <option class="bg-[var(--bg-card)]">Standard: 10s</option>
+                            </select>
+                            <x-lucide-chevron-down class="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)] pointer-events-none" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="glass-card p-12 space-y-10">
-            <div class="flex items-center gap-5 mb-4">
-                <div class="h-14 w-14 bg-bg-tertiary text-text-primary rounded-xl flex items-center justify-center border border-border-subtle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor"><path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z" /><path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3s-7-1.343-7-3z" /><path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z" /></svg>
+        <!-- Security & 2FA -->
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] p-12 rounded-3xl shadow-2xl space-y-12 transition-all duration-500">
+            <div class="flex items-center gap-5">
+                <div class="h-12 w-12 bg-blue-500/10 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/10">
+                    <x-lucide-shield-check class="h-6 w-6 text-blue-500" />
                 </div>
                 <div>
-                    <h3 class="text-xl font-display font-black text-text-primary tracking-tight">Motor de Datos</h3>
-                    <p class="text-xs text-text-tertiary font-bold uppercase tracking-widest mt-1">Persistencia y registros SQL</p>
+                    <h3 class="text-lg font-bold tracking-tight">Access Authority</h3>
+                    <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-1">Multi-factor security protocol</p>
                 </div>
             </div>
-            
-            <div class="space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-xs font-black text-text-tertiary uppercase tracking-[0.2em] mb-3">Host Endpoint</label>
-                        <input type="text" wire:model="dbHost" class="w-full bg-bg-tertiary border border-border-subtle focus:border-border-strong text-text-primary rounded-xl px-6 py-4 text-sm font-bold font-mono outline-none transition-colors" placeholder="127.0.0.1">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-text-tertiary uppercase tracking-[0.2em] mb-3">Database User</label>
-                        <input type="text" wire:model="dbUser" class="w-full bg-bg-tertiary border border-border-subtle focus:border-border-strong text-text-primary rounded-xl px-6 py-4 text-sm font-bold outline-none transition-colors" placeholder="root">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-black text-text-tertiary uppercase tracking-[0.2em] mb-3">Security Access Key (Pass)</label>
-                    <input type="password" wire:model="dbPass" class="w-full bg-bg-tertiary border border-border-subtle focus:border-border-strong text-text-primary rounded-xl px-6 py-4 text-sm font-bold outline-none transition-colors" placeholder="••••••••">
-                </div>
 
-                <div class="p-6 bg-bg-tertiary rounded-xl border border-border-subtle flex items-start gap-5">
-                    <div class="p-2.5 bg-bg-secondary rounded-lg text-text-primary border border-border-subtle shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            <div class="max-w-2xl">
+                @if($twoFactorEnabled)
+                    <div class="flex items-center justify-between p-6 bg-success/5 border border-success/20 rounded-2xl">
+                        <div class="flex items-center gap-4">
+                            <div class="h-10 w-10 bg-success/10 rounded-full flex items-center justify-center text-success">
+                                <x-lucide-check class="h-5 w-5" />
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-[var(--text-main)]">Two-Factor Authentication Active</p>
+                                <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest">Your account is protected by hardware token</p>
+                            </div>
+                        </div>
+                        <button wire:click="disableTwoFactor" class="text-[9px] font-black text-danger uppercase tracking-widest hover:underline">Disable</button>
                     </div>
-                    <p class="text-[11px] text-text-tertiary leading-loose font-bold uppercase tracking-tight">La infraestructura de datos garantiza la integridad de los registros históricos del TFG. Se recomienda el uso de volúmenes persistentes SQL.</p>
-                </div>
+                @elseif($twoFactorSecret)
+                    <div class="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <div class="flex flex-col md:flex-row gap-10 items-center bg-[var(--bg-main)] p-8 rounded-3xl border border-[var(--border-color)]">
+                            <div class="bg-white p-4 rounded-2xl shadow-xl">
+                                {!! $twoFactorQrCode !!}
+                            </div>
+                            <div class="space-y-4">
+                                <h4 class="text-sm font-bold text-[var(--text-main)]">Sync Identity</h4>
+                                <p class="text-[10px] text-[var(--text-muted)] font-bold leading-relaxed">Scan this code with Microsoft Authenticator or Google Authenticator to establish the link.</p>
+                                <div class="p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
+                                    <p class="text-[8px] text-[var(--text-muted)] font-black uppercase mb-1">Manual Entry Key</p>
+                                    <code class="text-[10px] font-mono font-black text-[var(--accent-primary)]">{{ $twoFactorSecret }}</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest ml-1">Verification Token</label>
+                            <div class="flex gap-4">
+                                <input type="text" wire:model="verificationCode" placeholder="000000" class="flex-1 bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-[var(--accent-primary)] text-[var(--text-main)] rounded-xl px-6 py-4 text-sm font-black tracking-[0.5em] outline-none transition-all">
+                                <button wire:click="confirmTwoFactor" class="bg-[var(--accent-primary)] text-white px-8 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-[var(--accent-primary)]/20">Establish Link</button>
+                            </div>
+                            @if(session()->has('error'))
+                                <p class="text-[9px] font-bold text-danger uppercase tracking-widest ml-1">{{ session('error') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @else
+                    <div class="flex items-center justify-between p-8 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-3xl">
+                        <div class="space-y-1">
+                            <p class="text-xs font-bold text-[var(--text-main)]">Enable 2FA Protection</p>
+                            <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest">Add an extra layer of authority to your login</p>
+                        </div>
+                        <button wire:click="generateTwoFactorSecret" class="bg-blue-500 text-white px-8 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:scale-105 transition-all">Setup MFA</button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
-    <div class="flex justify-end pt-8">
+    <div class="flex justify-center pt-8 pb-20">
         <button wire:click="saveSettings" 
-                class="btn-primary px-10 py-5 text-xs uppercase tracking-[0.2em] flex items-center gap-4 group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
-            Commit Changes
+                class="bg-[var(--accent-primary)] text-white px-16 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-4 hover:scale-[1.05] active:scale-[0.95] transition-all shadow-2xl shadow-[var(--accent-primary)]/40 group">
+            <x-lucide-save class="h-4 w-4 group-hover:rotate-12 transition-transform" />
+            Commit Changes to Core
         </button>
     </div>
 </div>

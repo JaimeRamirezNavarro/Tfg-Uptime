@@ -1,117 +1,101 @@
-<div class="space-y-12">
+<div class="space-y-10">
+    <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-4">
         <div>
-            <h1 class="text-4xl font-display font-black text-text-primary tracking-tight">Gestión de Alertas</h1>
-            <p class="text-base text-text-secondary font-medium mt-2">Configuración de umbrales y auditoría de incidencias críticas</p>
+            <h1 class="text-4xl font-display font-black tracking-tighter transition-colors">Alert Management</h1>
+            <p class="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-[0.3em] mt-2">Threshold Configuration & Incident Audit</p>
         </div>
     </div>
 
-    <!-- Alert Rules Section -->
+    <!-- Alert Rules Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 glass-card p-10 overflow-hidden relative">
-            <h3 class="text-lg font-display font-black text-text-primary mb-8 flex items-center gap-3 relative z-10">
-                <div class="h-2 w-2 bg-success rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
-                Reglas de Umbral Activas
-            </h3>
+        <div class="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border-color)] p-8 rounded-3xl shadow-xl transition-colors duration-500">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="h-2 w-2 bg-success rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Active Threshold Rules</h3>
+            </div>
             
-            <div class="space-y-5 relative z-10">
-                @foreach([['metric' => 'CPU', 'threshold' => '90%', 'channels' => ['Telegram', 'Email'], 'color' => 'primary'], ['metric' => 'RAM', 'threshold' => '95%', 'channels' => ['Email'], 'color' => 'sky']] as $rule)
-                <div class="flex items-center justify-between p-6 bg-bg-tertiary/50 rounded-xl border border-border-subtle hover:border-accent-primary hover:bg-bg-tertiary hover:shadow-lg hover:-translate-y-1 transition-all group cursor-pointer">
+            <div class="space-y-4">
+                @foreach([['metric' => 'CPU', 'threshold' => '90%', 'channels' => ['Telegram', 'Email']], ['metric' => 'RAM', 'threshold' => '95%', 'channels' => ['Email']]] as $rule)
+                <div class="flex items-center justify-between p-5 bg-[var(--bg-main)] rounded-2xl border border-[var(--border-color)] hover:border-[var(--accent-primary)]/30 transition-all group cursor-pointer">
                     <div class="flex items-center gap-5">
-                        <div class="h-14 w-14 bg-bg-tertiary text-text-primary rounded-xl flex items-center justify-center font-black text-sm border border-border-subtle">{{ $rule['metric'] }}</div>
+                        <div class="h-12 w-12 bg-[var(--bg-card)] text-[var(--text-main)] rounded-xl flex items-center justify-center font-black text-xs border border-[var(--border-color)]">{{ $rule['metric'] }}</div>
                         <div>
-                            <p class="text-base font-black text-text-primary tracking-tight">Carga {{ $rule['metric'] }} > {{ $rule['threshold'] }}</p>
-                            <p class="text-[10px] text-text-tertiary font-black uppercase tracking-widest mt-1">Notificación vía {{ implode(' & ', $rule['channels']) }}</p>
+                            <p class="text-xs font-bold text-[var(--text-main)] tracking-tight">Load {{ $rule['metric'] }} > {{ $rule['threshold'] }}</p>
+                            <p class="text-[8px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-1">Notification via {{ implode(' & ', $rule['channels']) }}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
-                        <span class="bg-success/10 text-success text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-widest border border-success/30 shadow-sm">Verified State</span>
-                        <button class="text-text-tertiary hover:text-accent-primary transition-all p-2.5 hover:bg-bg-tertiary rounded-lg shadow-sm border border-transparent hover:border-border-subtle"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
+                        <span class="text-[8px] font-black px-3 py-1.5 rounded-md border border-success/30 text-success bg-success/5 uppercase tracking-widest">Operational</span>
+                        <x-lucide-more-vertical class="h-4 w-4 text-[var(--text-muted)]" />
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
 
-        <div class="bg-bg-tertiary rounded-xl border border-border-strong p-10 flex flex-col justify-between hover:shadow-accent-primary/20 hover:-translate-y-2 transition-all cursor-pointer group relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -mr-20 -mt-20 group-hover:scale-125 transition-transform duration-700 blur-2xl"></div>
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] p-8 rounded-3xl shadow-xl flex flex-col justify-between hover:scale-[1.02] transition-all cursor-pointer group relative overflow-hidden">
             <div class="relative z-10">
-                <div class="h-16 w-16 bg-bg-secondary rounded-xl flex items-center justify-center text-text-primary mb-8 border border-border-subtle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                <div class="h-14 w-14 bg-[var(--accent-primary)] text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-[var(--accent-primary)]/20">
+                    <x-lucide-plus class="h-7 w-7" />
                 </div>
-                <h4 class="text-text-primary font-display font-black text-3xl tracking-tight mb-3 leading-none">Nueva Regla</h4>
-                <p class="text-text-secondary text-sm font-bold leading-relaxed">Configura un nuevo umbral de monitorización avanzada</p>
+                <h4 class="text-[var(--text-main)] font-black text-2xl tracking-tight mb-2">New Threshold</h4>
+                <p class="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-widest leading-relaxed">Configura un nuevo punto de monitorización avanzada</p>
             </div>
-            <div class="relative z-10 pt-8 mt-auto border-t border-border-subtle flex items-center justify-between">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary">Add Threshold</span>
-                <div class="h-10 w-10 bg-accent-primary text-white rounded-lg flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
-                </div>
+            <div class="relative z-10 pt-8 mt-auto border-t border-[var(--border-color)] flex items-center justify-between">
+                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)]">Establish Rule</span>
+                <x-lucide-arrow-right class="h-5 w-5 text-[var(--accent-primary)] group-hover:translate-x-2 transition-transform" />
             </div>
         </div>
     </div>
 
-    <!-- History Table -->
-    <div class="glass-card flex flex-col overflow-hidden">
-        <div class="px-10 py-8 border-b border-border-subtle flex justify-between items-center bg-bg-tertiary/50">
-            <div>
-                <h3 class="text-lg font-display font-black text-text-primary flex items-center gap-3">
-                    <div class="h-2 w-2 bg-danger rounded-full animate-pulse ring-4 ring-danger/10"></div>
-                    Stream de Incidentes Críticos
-                </h3>
-                <p class="text-xs text-text-secondary font-bold uppercase tracking-widest mt-1">Auditoría completa de alertas disparadas</p>
+    <!-- History Log Table -->
+    <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xl overflow-hidden transition-colors duration-500">
+        <div class="px-8 py-6 border-b border-[var(--border-color)] flex justify-between items-center bg-[var(--bg-sidebar)]/30">
+            <div class="flex items-center gap-3">
+                <div class="h-2 w-2 bg-danger rounded-full animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Critical Incident Stream</h3>
             </div>
         </div>
 
-        <div class="overflow-x-auto flex-1 p-0">
-            <table class="dark-table w-full">
-                <thead>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-[var(--bg-sidebar)]/50">
                     <tr>
-                        <th class="px-10 py-5">UTC Timestamp</th>
-                        <th class="px-6 py-5">Managed Node</th>
-                        <th class="px-6 py-5 text-center">Telemetry Source</th>
-                        <th class="px-6 py-5 text-center">Peak Value</th>
-                        <th class="px-6 py-5 text-center">Config Threshold</th>
-                        <th class="px-10 py-5 text-right">Channel Delivery</th>
+                        <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">UTC Timestamp</th>
+                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Managed Node</th>
+                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center">Telemetry Source</th>
+                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center">Peak Value</th>
+                        <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-right">Channel Delivery</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-[var(--border-color)]">
                     @forelse($history as $alert)
-                        <tr>
-                            <td>
-                                <span class="text-xs font-bold text-text-secondary font-mono tracking-tighter">{{ $alert->created_at->format('Y-m-d H:i:s') }}</span>
+                        <tr class="hover:bg-[var(--accent-primary)]/[0.02] transition-colors">
+                            <td class="px-8 py-6 text-[10px] font-mono font-bold text-[var(--text-muted)]">{{ $alert->created_at->format('Y-m-d H:i:s') }}</td>
+                            <td class="px-6 py-6">
+                                <span class="text-xs font-bold text-[var(--text-main)]">{{ $alert->server->name ?? 'Unknown Node' }}</span>
                             </td>
-                            <td>
-                                <span class="text-sm font-black text-text-primary">{{ $alert->server->name ?? 'Unknown Node' }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span class="bg-danger/10 text-danger text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-widest border border-danger/30 shadow-sm leading-none">
+                            <td class="px-6 py-6 text-center">
+                                <span class="text-[8px] font-black px-3 py-1.5 rounded-md border border-danger/30 text-danger bg-danger/5 uppercase tracking-widest">
                                     {{ $alert->cpu_load > 90 ? 'CPU Integrity' : 'RAM Capacity' }}
                                 </span>
                             </td>
-                            <td class="text-center">
-                                <span class="text-sm font-black text-danger">{{ $alert->cpu_load > 90 ? $alert->cpu_load : $alert->ram_usage }}%</span>
+                            <td class="px-6 py-6 text-center text-xs font-black text-danger">
+                                {{ $alert->cpu_load > 90 ? $alert->cpu_load : $alert->ram_usage }}%
                             </td>
-                            <td class="text-center">
-                                <span class="text-[10px] font-black text-text-secondary uppercase tracking-widest">{{ $alert->cpu_load > 90 ? 'Limit: 90%' : 'Limit: 95%' }}</span>
-                            </td>
-                            <td class="text-right">
+                            <td class="px-8 py-6 text-right">
                                 <div class="flex justify-end gap-2">
-                                    <div class="text-[9px] bg-bg-tertiary text-text-primary px-3 py-1.5 rounded-lg uppercase font-black tracking-widest border border-border-subtle shadow-sm">Telegram</div>
-                                    <div class="text-[9px] bg-bg-tertiary text-text-primary px-3 py-1.5 rounded-lg uppercase font-black tracking-widest border border-border-subtle shadow-sm">Email</div>
+                                    <span class="text-[7px] font-black bg-[var(--bg-main)] text-[var(--text-muted)] px-3 py-1 rounded border border-[var(--border-color)] uppercase tracking-widest">Telegram</span>
+                                    <span class="text-[7px] font-black bg-[var(--bg-main)] text-[var(--text-muted)] px-3 py-1 rounded border border-[var(--border-color)] uppercase tracking-widest">Email</span>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-10 py-32 text-center">
-                                <div class="flex flex-col items-center justify-center">
-                                    <div class="h-20 w-20 bg-bg-tertiary text-text-tertiary border border-border-subtle rounded-2xl flex items-center justify-center mb-6">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                    </div>
-                                    <p class="font-black text-base text-text-secondary">Estado de Red Saludable</p>
-                                    <p class="text-sm text-text-tertiary mt-2 uppercase tracking-widest font-black text-[10px]">Sin alertas registradas en el periodo actual</p>
-                                </div>
+                            <td colspan="5" class="px-8 py-32 text-center opacity-30">
+                                <x-lucide-shield-check class="h-12 w-12 mx-auto mb-4 text-success" />
+                                <p class="text-[10px] font-black uppercase tracking-widest">No Critical Incidents Detected</p>
                             </td>
                         </tr>
                     @endforelse

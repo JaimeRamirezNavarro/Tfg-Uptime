@@ -56,13 +56,22 @@ class ServerDetail extends Component
             // Modo Ping o HTTP: La gráfica muestra Latencia (representada en cpu_load)
             if ($this->timeframe === 'day') {
                 $data = $query->where('created_at', '>=', now()->subDay())
-                              ->orderBy('created_at', 'asc')
-                              ->get(['cpu_load', 'created_at']);
+                               ->selectRaw('AVG(cpu_load) as cpu, strftime("%H:%M", created_at) as minute')
+                               ->groupBy('minute')
+                               ->orderBy('minute', 'asc')
+                               ->get();
                 
+                // Agrupar por bloques de 5 minutos para reducir puntos (288 puntos máx)
+                $downsampled = $data->groupBy(function($item) {
+                    $time = explode(':', $item->minute);
+                    $m = floor((int)$time[1] / 5) * 5;
+                    return $time[0] . ':' . str_pad($m, 2, '0', STR_PAD_LEFT);
+                })->map(fn($group) => $group->avg('cpu'));
+
                 $this->chartData = [
-                    'labels' => $data->map(fn($m) => $m->created_at->format('H:i')),
-                    'cpu' => $data->pluck('cpu_load'), // Realmente es Latencia
-                    'ram' => $data->map(fn() => 0),
+                    'labels' => $downsampled->keys(),
+                    'cpu' => $downsampled->values()->map(fn($v) => round($v, 0)),
+                    'ram' => $downsampled->keys()->map(fn() => 0),
                 ];
             } else {
                 // Mes/Año para Ping
@@ -82,13 +91,22 @@ class ServerDetail extends Component
             // Modo Agente: Original CPU/RAM
             if ($this->timeframe === 'day') {
                 $data = $query->where('created_at', '>=', now()->subDay())
-                              ->orderBy('created_at', 'asc')
-                              ->get(['cpu_load', 'ram_usage', 'created_at']);
+                               ->selectRaw('AVG(cpu_load) as cpu, AVG(ram_usage) as ram, strftime("%H:%M", created_at) as minute')
+                               ->groupBy('minute')
+                               ->orderBy('minute', 'asc')
+                               ->get();
                 
+                // Agrupar por bloques de 5 minutos para reducir puntos (288 puntos máx)
+                $downsampled = $data->groupBy(function($item) {
+                    $time = explode(':', $item->minute);
+                    $m = floor((int)$time[1] / 5) * 5;
+                    return $time[0] . ':' . str_pad($m, 2, '0', STR_PAD_LEFT);
+                });
+
                 $this->chartData = [
-                    'labels' => $data->map(fn($m) => $m->created_at->format('H:i')),
-                    'cpu' => $data->pluck('cpu_load'),
-                    'ram' => $data->pluck('ram_usage'),
+                    'labels' => $downsampled->keys(),
+                    'cpu' => $downsampled->map(fn($g) => round($g->avg('cpu'), 1))->values(),
+                    'ram' => $downsampled->map(fn($g) => round($g->avg('ram'), 1))->values(),
                 ];
             } elseif ($this->timeframe === 'month') {
                 $data = $query->where('created_at', '>=', now()->subMonth())

@@ -34,7 +34,7 @@ API_HOST = get_server_host()
 API_PORT = os.getenv('API_PORT', '8080')  # Puerto por defecto 8080 (Docker)
 API_URL = f"http://{API_HOST}:{API_PORT}/api/metrics"
 API_TOKEN = os.getenv('API_TOKEN', 'YJ6YOPh3tWKe886Wp4BzDPrfhhLA158s')
-INTERVAL = 5  # Segundos entre envíos
+INTERVAL = 15  # Segundos entre envíos (Optimizado para Zimablade)
 
 def get_local_metrics():
     # 1. Obtener métricas básicas del propio sistema (ZimaBlade)
@@ -46,14 +46,14 @@ def get_local_metrics():
     services = []
     containers = []
 
-    # Obtener servicios de systemd (ZimaBlade es Linux)
+    # Obtener servicios de systemd (ZimaBlade es Linux) - Optimizado: solo top 10
     try:
-        cmd = "systemctl list-units --type=service --state=running --no-pager | head -n 15 | awk 'NR>1 {print $1}'"
+        cmd = "systemctl list-units --type=service --state=running --no-pager --legend=false | head -n 10 | awk '{print $1}'"
         output = subprocess.check_output(cmd, shell=True).decode()
         services = [s.strip().replace('.service', '') for s in output.split('\n') if s.strip()]
     except Exception as e:
-        print(f"[{time.strftime('%H:%M:%S')}] Warning: No se pudo obtener servicios: {e}")
-        sys.stdout.flush()
+        # No imprimimos error cada vez para no llenar el log en Zimablade
+        pass
 
     # Obtener contenedores Docker (ZimaBlade típicamente corre Docker)
     try:

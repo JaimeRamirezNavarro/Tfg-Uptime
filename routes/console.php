@@ -8,6 +8,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('servers:poll')->everyMinute();
-Schedule::command('uptime:poll-web')->everyMinute();
+Schedule::command('metrics:prune')->daily();
+Schedule::command('servers:check')->everyThirtySeconds();
 Schedule::command('uptime:check-status')->everyMinute();

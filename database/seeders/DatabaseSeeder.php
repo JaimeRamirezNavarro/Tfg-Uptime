@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(
-            ['email' => 'jaime@uptime.com'],
+            ['email' => 'root@uptime.local'],
             [
-                'name' => 'Jaime',
-                'password' => bcrypt('password'),
+                'name' => 'root',
+                'password' => bcrypt('MihermanoesAle1'),
             ]
         );
 
