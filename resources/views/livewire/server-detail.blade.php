@@ -81,15 +81,18 @@
     </div>
 
     <!-- Infrastructure Services (Agent Only) -->
-    @if($server->check_type === 'agent' && $server->last_sync_details)
+    @if($server->check_type === 'agent')
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Container Layer -->
-            <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xl overflow-hidden transition-colors duration-500">
-                <div class="p-6 border-b border-[var(--border-color)] flex items-center gap-3 bg-[var(--bg-sidebar)]/30">
-                    <x-lucide-box class="h-5 w-5 text-[var(--accent-primary)]" />
-                    <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Active Containers</h3>
-                </div>
-                <div class="p-6 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
+            <div x-data="{ open: false }" class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xl overflow-hidden transition-all duration-500">
+                <button @click="open = !open" class="w-full p-6 flex items-center justify-between bg-[var(--bg-sidebar)]/30 hover:bg-[var(--bg-sidebar)]/50 transition-colors focus:outline-none">
+                    <div class="flex items-center gap-3">
+                        <x-lucide-box class="h-5 w-5 text-[var(--accent-primary)]" />
+                        <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Contenedores Docker</h3>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--text-muted)] transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div x-show="open" x-transition.opacity.duration.300ms class="p-6 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar border-t border-[var(--border-color)] bg-[var(--bg-card)]">
                     @forelse($server->last_sync_details['containers'] ?? [] as $container)
                         @php $isRunning = str_contains(strtolower($container), 'up') || str_contains(strtolower($container), 'running'); @endphp
                         <div class="flex items-center justify-between p-4 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-2xl group hover:border-[var(--accent-primary)]/30 transition-all">
@@ -99,30 +102,33 @@
                             </span>
                         </div>
                     @empty
-                        <div class="py-12 text-center opacity-20">
-                            <x-lucide-layers-2 class="h-10 w-10 mx-auto mb-4" />
-                            <p class="text-[10px] font-bold uppercase tracking-widest">Virtual Layer Empty</p>
+                        <div class="py-12 text-center opacity-40">
+                            <x-lucide-layers-2 class="h-10 w-10 mx-auto mb-4 text-[var(--text-muted)]" />
+                            <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Sin contenedores</p>
                         </div>
                     @endforelse
                 </div>
             </div>
 
             <!-- Core Services -->
-            <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xl overflow-hidden transition-colors duration-500">
-                <div class="p-6 border-b border-[var(--border-color)] flex items-center gap-3 bg-[var(--bg-sidebar)]/30">
-                    <x-lucide-activity class="h-5 w-5 text-[var(--accent-primary)]" />
-                    <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">System Services</h3>
-                </div>
-                <div class="p-6 grid grid-cols-2 gap-4">
+            <div x-data="{ open: false }" class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xl overflow-hidden transition-all duration-500">
+                <button @click="open = !open" class="w-full p-6 flex items-center justify-between bg-[var(--bg-sidebar)]/30 hover:bg-[var(--bg-sidebar)]/50 transition-colors focus:outline-none">
+                    <div class="flex items-center gap-3">
+                        <x-lucide-activity class="h-5 w-5 text-[var(--accent-primary)]" />
+                        <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Servicios del Sistema</h3>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--text-muted)] transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div x-show="open" x-transition.opacity.duration.300ms class="p-6 grid grid-cols-2 gap-4 border-t border-[var(--border-color)] bg-[var(--bg-card)]">
                     @forelse($server->last_sync_details['services'] ?? [] as $service)
                         <div class="flex items-center gap-3 p-4 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-2xl group hover:border-[var(--accent-primary)]/30 transition-all">
                             <div class="h-2 w-2 rounded-full bg-success shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
-                            <span class="text-[10px] font-black text-[var(--text-main)] uppercase tracking-tight truncate">{{ $service }}</span>
+                            <span class="text-[10px] font-black text-[var(--text-main)] uppercase tracking-tight truncate" title="{{ $service }}">{{ $service }}</span>
                         </div>
                     @empty
-                        <div class="col-span-2 py-12 text-center opacity-20">
-                            <x-lucide-cpu class="h-10 w-10 mx-auto mb-4" />
-                            <p class="text-[10px] font-bold uppercase tracking-widest">No Active Services</p>
+                        <div class="col-span-2 py-12 text-center opacity-40">
+                            <x-lucide-cpu class="h-10 w-10 mx-auto mb-4 text-[var(--text-muted)]" />
+                            <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Sin servicios activos</p>
                         </div>
                     @endforelse
                 </div>

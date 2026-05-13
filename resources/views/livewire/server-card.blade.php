@@ -63,7 +63,6 @@
 
         @if($activeDetailsId === $server->id)
             <div class="mt-10 pt-10 border-t border-surface-100 grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                @php $details = json_decode($server->last_sync_details, true); @endphp
                 
                 <div>
                     <h4 class="text-[10px] font-black text-emerald-600 mb-5 flex items-center gap-3 uppercase tracking-widest">
@@ -71,7 +70,7 @@
                         Runtime Services
                     </h4>
                     <ul class="space-y-2.5">
-                        @forelse($details['services'] ?? [] as $service)
+                        @forelse($services as $service)
                             <li class="text-[11px] font-bold text-surface-600 flex items-center gap-3 bg-surface-50 px-4 py-2.5 rounded-none border border-surface-100 transition-all hover:bg-white hover:shadow-sm">
                                 <span class="text-emerald-400 font-black">·</span> {{ $service }}
                             </li>
@@ -87,7 +86,7 @@
                         Active Containers
                     </h4>
                     <ul class="space-y-2.5">
-                        @forelse($details['containers'] ?? [] as $container)
+                        @forelse($containers as $container)
                             <li class="text-[11px] font-bold text-surface-600 flex items-center gap-3 bg-surface-50 px-4 py-2.5 rounded-none border border-surface-100 transition-all hover:bg-white hover:shadow-sm">
                                 <span class="text-sky-400 font-black">·</span> {{ $container }}
                             </li>
