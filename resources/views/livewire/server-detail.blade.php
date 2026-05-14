@@ -3,7 +3,7 @@
     $status = ($current && $current->created_at->diffInSeconds(now()) < 50) ? 'ONLINE' : 'OFFLINE';
 @endphp
 
-<div class="space-y-8" wire:poll.15s>
+<div class="space-y-8" wire:poll.30s>
     <!-- Analytics Cockpit -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Main Telemetry Chart -->

@@ -48,7 +48,7 @@ class MetricController extends Controller
         ];
 
         if (!empty($validated['details'])) {
-            $metricData['details'] = json_decode($validated['details'], true);
+            $metricData['details'] = is_string($validated['details']) ? json_decode($validated['details'], true) : $validated['details'];
         }
 
         $metric = $server->metrics()->create($metricData);
