@@ -56,6 +56,9 @@ class Dashboard extends Component
 mkdir -p /opt/uptime-agent
 cat << 'EOF' > /opt/uptime-agent/agent.sh
 #!/bin/bash
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export LC_ALL=C
+
 while true; do
   # 1. Metricas basicas (con valores por defecto)
   CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\\([0-9.]*\\)%* id.*/\\1/" | awk '{print 100 - \$1}')
