@@ -36,7 +36,7 @@ class ServerTerminal extends Component
                 throw new Exception("Autenticación SSH fallida.");
             }
 
-            $output = $ssh->exec($cmd);
+            $output = $ssh->exec($cmd . ' 2>&1');
             if (empty(trim($output))) {
                 $output = "[Comando ejecutado sin salida]";
             }
