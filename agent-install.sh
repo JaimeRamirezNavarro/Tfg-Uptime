@@ -29,7 +29,7 @@ API_TOKEN="${API_TOKEN:-YJ6YOPh3tWKe886Wp4BzDPrfhhLA158s}"
 echo -e "${YELLOW}[1/4]${NC} Creando directorio del agente..."
 mkdir -p "$AGENT_DIR"
 
-echo -e "${YELLOW}[2/4]${NC} Escribiendo daemon en Bash..."
+echo -e "${YELLOW}[2/4]${NC} Creando script en Bash..."
 cat > "$AGENT_DIR/agent.sh" << 'EOF'
 #!/bin/bash
 API_URL="${API_URL:-http://localhost:8080/api/metrics}"
@@ -100,8 +100,8 @@ systemctl restart uptime-agent.service
 
 sleep 2
 if systemctl is-active --quiet uptime-agent; then
-    echo -e "${GREEN}✓ Agente instalado correctamente!${NC}"
+    echo -e "${GREEN}Agente instalado correctamente!${NC}"
     echo "Usa 'journalctl -u uptime-agent -f' para ver los datos en vivo."
 else
-    echo -e "${RED}✗ Error al iniciar el agente.${NC}"
+    echo -e "${RED}Error al iniciar el agente.${NC}"
 fi

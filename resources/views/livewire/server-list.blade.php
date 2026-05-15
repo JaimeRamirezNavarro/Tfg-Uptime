@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-4">
         <div>
-            <h1 class="text-4xl font-display font-black tracking-tighter transition-colors">Node Inventory</h1>
+            <h1 class="text-4xl font-display font-black tracking-tighter transition-colors">Mis Servidores</h1>
             <p class="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-[0.3em] mt-2">Centralized Infrastructure Asset Management</p>
         </div>
     </div>
@@ -15,7 +15,7 @@
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Provisioning Sidebar -->
+        <!-- Sidebar -->
         <div class="lg:col-span-4 lg:sticky lg:top-24 h-fit">
             <div class="bg-[var(--bg-card)] border border-[var(--border-color)] p-8 rounded-3xl shadow-xl space-y-8 transition-colors duration-500">
                 <div class="h-14 w-14 bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/20 text-[var(--accent-primary)] rounded-2xl flex items-center justify-center">
@@ -70,7 +70,7 @@
                     @endif
                     
                     <button type="submit" class="w-full bg-[var(--accent-primary)] text-white h-14 rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-[var(--accent-primary)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all border-none">
-                        <span wire:loading.remove>Commit Node</span>
+                        <span wire:loading.remove>Añadir Servidor</span>
                         <div wire:loading class="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         <span wire:loading>Processing...</span>
                     </button>
@@ -78,12 +78,12 @@
             </div>
         </div>
 
-        <!-- Directory Matrix -->
+        <!-- Lista de Servidores -->
         <div class="lg:col-span-8 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xl flex flex-col overflow-hidden transition-colors duration-500">
             <div class="px-8 py-6 border-b border-[var(--border-color)] flex justify-between items-center bg-[var(--bg-sidebar)]/30">
                 <div>
                     <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Asset Directory</h3>
-                    <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-1">Cluster node instances</p>
+                    <p class="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-1">Servidores registrados</p>
                 </div>
                 <span class="text-[9px] text-[var(--text-muted)] font-black bg-[var(--bg-main)] px-4 py-2 rounded-xl border border-[var(--border-color)] shadow-sm">{{ count($servers) }} registros</span>
             </div>
@@ -112,7 +112,7 @@
                                         </div>
                                         <div>
                                             <p class="text-xs font-bold text-[var(--text-main)] group-hover/row:text-[var(--accent-primary)] transition-colors">{{ $server->name }}</p>
-                                            <p class="text-[8px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-1">{{ $server->check_type === 'agent' ? 'Agent Node' : 'Latency Tracker' }}</p>
+                                            <p class="text-[8px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-1">{{ $server->check_type === 'agent' ? 'Agente' : 'Latencia' }}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -143,7 +143,7 @@
                             <tr>
                                 <td colspan="4" class="px-8 py-32 text-center opacity-30">
                                     <x-lucide-hard-drive class="h-12 w-12 mx-auto mb-4" />
-                                    <p class="text-[10px] font-black uppercase tracking-widest">No active node deployments found</p>
+                                    <p class="text-[10px] font-black uppercase tracking-widest">Sin servidores registrados</p>
                                 </td>
                             </tr>
                         @endforelse

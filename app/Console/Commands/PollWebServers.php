@@ -7,11 +7,13 @@ use App\Models\Server;
 use App\Models\Metric;
 use Illuminate\Support\Facades\Http;
 use Exception;
+use App\Traits\SendsWhatsAppAlerts;
 
 class PollWebServers extends Command
 {
+    use SendsWhatsAppAlerts;
     protected $signature = 'uptime:poll-web';
-    protected $description = 'Perform Ping and HTTP checks for non-agent nodes.';
+    protected $description = 'Revisar estado de los servidores web sin agente.';
 
     public function handle()
     {
@@ -25,7 +27,7 @@ class PollWebServers extends Command
         }
 
         foreach ($servers as $server) {
-            $this->info("Checking node: {$server->name} ({$server->check_type})");
+            $this->info("Revisando servidor: {$server->name} ({$server->check_type})");
 
             $startTime = microtime(true);
             $success = false;
@@ -65,9 +67,18 @@ class PollWebServers extends Command
                         'ram_usage' => 0,
                         'disk_free' => 0
                     ]);
-                    $this->info("Node ONLINE: {$latency}ms");
+                    $this->info("Servidor Conectado: {$latency}ms");
+                    // Reset alert flag
+                    if ($server->status === 'offline') {
+                        $this->sendWhatsAppMessage("✅ UPTIME RECUPERADO\nEl servidor *{$server->name}* vuelve a estar en línea.");
+                        $server->update(['status' => 'online']);
+                    }
                 } else {
-                    $this->error("Node OFFLINE");
+                    $this->error("Servidor Desconectado");
+                    if ($server->status !== 'offline') {
+                        $this->sendWhatsAppMessage("❌ ALERTA UPTIME\nEl servidor *{$server->name}* se ha desconectado.");
+                        $server->update(['status' => 'offline']);
+                    }
                 }
 
             } catch (Exception $e) {

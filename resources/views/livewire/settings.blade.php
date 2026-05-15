@@ -90,7 +90,7 @@
                     </div>
 
                     <div class="space-y-3">
-                        <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">Telemetry Stream</label>
+                        <label class="block text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">Historial de Métricas</label>
                         <div class="relative group">
                             <select class="w-full bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-[var(--accent-primary)] text-[var(--text-main)] rounded-xl px-6 py-4 text-xs font-bold appearance-none outline-none transition-all">
                                 <option class="bg-[var(--bg-card)]">Stream: 2s (Real-time)</option>

@@ -9,8 +9,11 @@ use App\Models\Server;
 use App\Events\MetricUpdated;
 use Illuminate\Support\Facades\Log;
 
+use App\Traits\SendsWhatsAppAlerts;
+
 class MetricController extends Controller
 {
+    use SendsWhatsAppAlerts;
     public function store(Request $request)
     {
         // 1. Validamos que los datos sean correctos
@@ -62,6 +65,15 @@ class MetricController extends Controller
 
         // 5. Disparamos el evento en tiempo real (Reverb)
         broadcast(new MetricUpdated($server, $metric))->toOthers();
+
+        // 6. Alerta de WhatsApp por CPU alta
+        if ($metric->cpu_load > 90) {
+            // Solo enviar si no hemos alertado en la última hora para evitar SPAM
+            if (!$server->last_alerted_at || $server->last_alerted_at->diffInHours(now()) >= 1) {
+                $this->sendWhatsAppMessage("⚠️ ALERTA UPTIME\nEl servidor *{$server->name}* tiene la CPU al {$metric->cpu_load}%!");
+                $server->update(['last_alerted_at' => now()]);
+            }
+        }
 
         return response()->json([
             'status' => 'success',

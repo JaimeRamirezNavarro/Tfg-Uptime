@@ -110,11 +110,11 @@ def send_to_api(cpu, ram, disk, details):
 
 def run():
     print("==========================================================")
-    print("  🚀 UPTIME AGENTE AUTÓNOMO - ZimaBlade Edition")
+    print("  UPTIME AGENTE AUTÓNOMO - ZimaBlade Edition")
     print("==========================================================")
-    print(f"  📡 API DESTINO: {API_URL}")
-    print(f"  🖥️  HOSTNAME: {socket.gethostname()}")
-    print(f"  ⏱️  INTERVALO: {INTERVAL}s")
+    print(f"  API DESTINO: {API_URL}")
+    print(f"  HOSTNAME: {socket.gethostname()}")
+    print(f"  INTERVALO: {INTERVAL}s")
     print("==========================================================")
     
     while True:

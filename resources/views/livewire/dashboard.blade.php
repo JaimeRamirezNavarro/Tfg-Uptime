@@ -3,17 +3,17 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <h1 class="text-4xl font-display font-black tracking-tighter transition-colors text-[var(--text-main)]">Infrastructure Overview</h1>
-            <p class="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-[0.3em] mt-2 opacity-80">Real-time Node Matrix & Telemetry</p>
+            <p class="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-[0.3em] mt-2 opacity-80">Estado y Rendimiento de Servidores</p>
         </div>
         <button wire:click="$set('open', true)" class="bg-[var(--accent-primary)] text-white h-12 rounded-xl px-8 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[var(--accent-primary)]/20 hover:opacity-90 active:scale-95 transition-all border-none flex items-center gap-3 cursor-pointer">
             <x-lucide-plus class="h-4 w-4" />
-            Provision Node
+            Añadir Servidor
         </button>
     </div>
 
     <!-- Cards Matrix -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        @foreach(['Global Nodes' => count($servers), 'Operational' => $stats['active_nodes'] ?? 0, 'Active Alerts' => $stats['alerts'] ?? 0, 'Cluster Uptime' => $stats['uptime_percent'] ?? '100%'] as $label => $val)
+        @foreach(['Servidores Totales' => count($servers), 'Activos' => $stats['active_nodes'] ?? 0, 'Alertas Activas' => $stats['alerts'] ?? 0, 'Disponibilidad' => $stats['uptime_percent'] ?? '100%'] as $label => $val)
             <div class="bg-[var(--bg-card)] border border-[var(--border-color)] p-6 shadow-sm transition-colors duration-500" style="border-radius: 24px;">
                 <p class="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">{{ $label }}</p>
                 <h4 class="text-3xl font-black text-[var(--text-main)] tracking-tighter mt-1">{{ $val }}</h4>
@@ -35,8 +35,8 @@
                 <!-- Header -->
                 <div class="flex justify-between items-start mb-8">
                     <div>
-                        <h2 class="text-2xl font-black text-[var(--text-main)] tracking-tight">Node Configuration</h2>
-                        <p class="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-1">PROVISIONING LAYER</p>
+                        <h2 class="text-2xl font-black text-[var(--text-main)] tracking-tight">Configuración de Servidor</h2>
+                        <p class="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-1">AÑADIR NUEVO SERVIDOR</p>
                     </div>
                     <button wire:click="$set('open', false)" class="text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer transition-colors mt-1">
                         <x-lucide-x class="h-5 w-5" />
@@ -107,9 +107,9 @@
         <table class="w-full text-left">
             <thead class="border-b border-[var(--border-color)] text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">
                 <tr>
-                    <th class="px-6 py-5">Node Identity</th>
-                    <th class="px-6 py-5 text-center">Status</th>
-                    <th class="px-6 py-5 text-center">Telemetry</th>
+                    <th class="px-6 py-5">Nombre del Servidor</th>
+                    <th class="px-6 py-5 text-center">Estado</th>
+                    <th class="px-6 py-5 text-center">Métricas</th>
                     <th class="px-6 py-5 text-right">Actions</th>
                 </tr>
             </thead>

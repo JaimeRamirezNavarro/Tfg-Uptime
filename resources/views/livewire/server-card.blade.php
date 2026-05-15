@@ -100,7 +100,7 @@
     @else
         <div class="py-20 mt-8 border-2 border-dashed border-surface-100 rounded-none text-center bg-surface-50/50 flex flex-col items-center">
             <div class="h-12 w-12 rounded-none border-2 border-surface-200 border-t-primary-500 animate-spin mb-4"></div>
-            <p class="text-[10px] text-surface-400 font-black uppercase tracking-[0.2em] animate-pulse">Awaiting Telemetry Flow...</p>
+            <p class="text-[10px] text-surface-400 font-black uppercase tracking-[0.2em] animate-pulse">Esperando datos...</p>
         </div>
     @endif
 

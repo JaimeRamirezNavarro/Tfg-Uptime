@@ -4,14 +4,26 @@
 @endphp
 
 <div class="space-y-8" wire:poll.30s>
+    <!-- Header -->
+    <div class="flex justify-between items-center bg-[var(--bg-card)] border border-[var(--border-color)] p-6 rounded-3xl shadow-md">
+        <div>
+            <h1 class="text-3xl font-black text-[var(--text-main)]">{{ $server->name }}</h1>
+            <p class="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest mt-1">{{ $server->ip_address }}</p>
+        </div>
+        <a href="{{ route('server.report', $server->id) }}" target="_blank" class="flex items-center gap-2 bg-[var(--bg-main)] hover:bg-[var(--accent-primary)]/10 text-[var(--text-main)] hover:text-[var(--accent-primary)] px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border border-[var(--border-color)] hover:border-[var(--accent-primary)]/50">
+            <x-lucide-file-text class="h-4 w-4" />
+            Descargar Informe PDF
+        </a>
+    </div>
+
     <!-- Analytics Cockpit -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Main Telemetry Chart -->
+        <!-- Main Chart -->
         <div class="lg:col-span-2 bg-[var(--bg-card)] border border-[var(--border-color)] p-8 rounded-3xl shadow-xl transition-colors duration-500" wire:ignore wire:key="chart-wrapper-{{ $server->id }}">
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]">Performance Analytics</h3>
-                    <p class="text-xl font-bold text-[var(--text-main)] mt-1">Real-time Stream Matrix</p>
+                    <p class="text-xl font-bold text-[var(--text-main)] mt-1">Gráfico de Rendimiento en Vivo</p>
                 </div>
                 <div class="flex gap-6 bg-[var(--bg-sidebar)]/50 px-5 py-2.5 border border-[var(--border-color)] rounded-2xl">
                     <div class="flex items-center gap-2">
@@ -134,6 +146,13 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Terminal Web -->
+        @if($server->check_type === 'agent')
+            <div class="mt-8">
+                @livewire('server-terminal', ['server' => $server])
+            </div>
+        @endif
     @endif
 
     <!-- Registry History -->
@@ -141,7 +160,7 @@
         <div class="p-6 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)]/30 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <x-lucide-history class="h-5 w-5 text-[var(--text-muted)]" />
-                <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Telemetry History</h3>
+                <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-widest">Historial de Métricas</h3>
             </div>
             <span class="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest border border-[var(--border-color)] px-3 py-1 rounded-full">{{ $server->metrics()->count() }} Logged Entries</span>
         </div>

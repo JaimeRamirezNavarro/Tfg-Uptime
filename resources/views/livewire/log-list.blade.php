@@ -27,8 +27,8 @@
                     <tr>
                         <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Sequence Timestamp</th>
                         <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center">Protocol Level</th>
-                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Origin Node</th>
-                        <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Telemetry Payload</th>
+                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Servidor</th>
+                        <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Datos Recibidos</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[var(--border-color)]">

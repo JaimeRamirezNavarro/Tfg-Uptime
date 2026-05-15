@@ -92,7 +92,7 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable uptime-agent.service
 sudo systemctl restart uptime-agent.service
-echo "¡AGENTE REPARADO Y FUNCIONANDO!"
+echo "Agente instalado correctamente"
 EOT;
 
         $this->line($output);

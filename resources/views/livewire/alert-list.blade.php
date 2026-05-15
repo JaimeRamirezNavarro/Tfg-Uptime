@@ -63,8 +63,8 @@
                 <thead class="bg-[var(--bg-sidebar)]/50">
                     <tr>
                         <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">UTC Timestamp</th>
-                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Managed Node</th>
-                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center">Telemetry Source</th>
+                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Servidor</th>
+                        <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center">Origen</th>
                         <th class="px-6 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-center">Peak Value</th>
                         <th class="px-8 py-5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest text-right">Channel Delivery</th>
                     </tr>
@@ -74,7 +74,7 @@
                         <tr class="hover:bg-[var(--accent-primary)]/[0.02] transition-colors">
                             <td class="px-8 py-6 text-[10px] font-mono font-bold text-[var(--text-muted)]">{{ $alert->created_at->format('Y-m-d H:i:s') }}</td>
                             <td class="px-6 py-6">
-                                <span class="text-xs font-bold text-[var(--text-main)]">{{ $alert->server->name ?? 'Unknown Node' }}</span>
+                                <span class="text-xs font-bold text-[var(--text-main)]">{{ $alert->server->name ?? 'Servidor Desconocido' }}</span>
                             </td>
                             <td class="px-6 py-6 text-center">
                                 <span class="text-[8px] font-black px-3 py-1.5 rounded-md border border-danger/30 text-danger bg-danger/5 uppercase tracking-widest">
